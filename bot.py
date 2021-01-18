@@ -15,14 +15,16 @@ from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 #            format=default_format)
 
 # You can pass some keyword args config to init function
-nonebot.init()
+nonebot.init(_env_file=".env")
+nonebot.load_builtin_plugins()
 app = nonebot.get_asgi()
 
 driver = nonebot.get_driver()
 driver.register_adapter("cqhttp", CQHTTPBot)
 
 
-nonebot.load_plugins("src/plugins")
+# nonebot.load_plugins("src/plugins")
+nonebot.load_plugins("fundbot/plugins")
 
 # Modify some config / config depends on loaded configs
 # 
