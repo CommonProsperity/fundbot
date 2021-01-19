@@ -138,4 +138,10 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
+# project related 
+*config.hjson
+device.json
+*.exe
+data/
+
 # End of https://www.toptal.com/developers/gitignore/api/python
