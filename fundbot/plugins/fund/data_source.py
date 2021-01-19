@@ -14,7 +14,7 @@ async def getFundData(fund_id):
         if data:
             return scanfFundJson(data)
         else:
-            return "请输入正确的基金代号"
+            return "卧槽查不到啊"
 
 def decodeFundData(fund_data):
     data = fund_data.text
@@ -30,11 +30,10 @@ def scanfFundJson(json_file):
     format_pattern = "%s: %s\n"
     result += format_pattern % ("基金代号", json_file["fundcode"])
     result += format_pattern % ("基金名称", json_file["name"])
-    # result += "\n"
-    # result += format_pattern % ("单位净值", json_file["dwjz"])
-    # result += format_pattern % ("日期", json_file["jzrq"])
     result += "\n"
-    # result += format_pattern % ("估算净值", json_file["gsz"])
+    result += format_pattern % ("单位净值", json_file["dwjz"])
+    result += format_pattern % ("日期", json_file["jzrq"])
+    result += format_pattern % ("估算净值", json_file["gsz"])
     result += format_pattern % ("估算增值率", json_file["gszzl"])
     result += format_pattern % ("估算时间", json_file["gztime"])
 
