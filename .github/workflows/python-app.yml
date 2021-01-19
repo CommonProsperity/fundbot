@@ -34,6 +34,3 @@ jobs:
     - name: Test with pytest
       run: |
         if [ -f test.py ]; then python test.py; fi
-    - name: Deploy Service
-      run: |
-        curl 202.120.40.8:30263/deploy -X POST
