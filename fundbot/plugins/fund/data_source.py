@@ -3,6 +3,7 @@ import datetime
 import random
 from functools import wraps
 import copy
+from typing import Union, List, Dict
 
 import httpx
 
@@ -26,7 +27,7 @@ def daily_cache(func):
 
 
 # @daily_cache
-async def get_all_fund():
+async def get_all_fund() -> Union[List, str]:
     async with httpx.AsyncClient() as client:
         rand_rt = util.get_random_dt()
         url = f'https://fund.eastmoney.com/js/fundcode_search.js?dt={rand_rt}'
@@ -39,10 +40,8 @@ async def get_all_fund():
             return "出问题了，兄弟"
 
 
-async def getFundData(fund_id):
-    fund_id = str(fund_id)
-    recent_time = time.time()*1000 - random.randint(1, 500)
-    recent_time = str(int(recent_time))
+async def getFundData(fund_id: str) -> str:
+    recent_time = util.get_random_dt()
     url = f"https://fundgz.1234567.com.cn/js/{fund_id}.js?rt={recent_time}"
     async with httpx.AsyncClient() as client:
         r = await client.get(url)
@@ -53,7 +52,7 @@ async def getFundData(fund_id):
             return "卧槽查不到啊"
 
 
-def decodeFundData(fund_data):
+def decodeFundData(fund_data: str) -> Dict:
     data = fund_data.text
     if data[0:8] == 'jsonpgz(':
         return eval(data[8:-2])
@@ -62,7 +61,7 @@ def decodeFundData(fund_data):
         return None
 
 
-def scanfFundJson(json_file):
+def scanfFundJson(json_file: Dict) -> str:
     # format output
     result = ""
     format_pattern = "%s: %s\n"
