@@ -5,10 +5,6 @@ import nonebot
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
 
-# Modify some config / config depends on loaded configs
-config = driver.config
-config.command_start = {"#"}
-
 # Custom your logger
 # 
 # from nonebot.log import logger, default_format
@@ -29,6 +25,10 @@ driver.register_adapter("cqhttp", CQHTTPBot)
 
 # nonebot.load_plugins("src/plugins")
 nonebot.load_plugins("fundbot/plugins")
+
+# Modify some config / config depends on loaded configs
+config = driver.config
+config.command_start = {"#"}
 
 
 if __name__ == "__main__":
