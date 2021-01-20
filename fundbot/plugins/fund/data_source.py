@@ -6,7 +6,7 @@ async def getFundData(fund_id):
     fund_id = str(fund_id)
     recent_time = time.time()*1000 - random.randint(1,500)
     recent_time = str(int(recent_time))
-    url = "http://fundgz.1234567.com.cn/js/%s.js?rt=%s" % (fund_id, recent_time)
+    url = "https://fundgz.1234567.com.cn/js/%s.js?rt=%s" % (fund_id, recent_time)
     async with httpx.AsyncClient() as client:
         r = await client.get(url)
         data = decodeFundData(r)
