@@ -27,9 +27,8 @@ driver.register_adapter("cqhttp", CQHTTPBot)
 nonebot.load_plugins("fundbot/plugins")
 
 # Modify some config / config depends on loaded configs
-# 
-# config = driver.config
-# do something...
+config = driver.config
+config.command_start = {"#"}
 
 
 if __name__ == "__main__":
