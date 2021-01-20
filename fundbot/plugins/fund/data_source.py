@@ -1,12 +1,49 @@
-import httpx
 import time
+import datetime
 import random
+from functools import wraps
+import copy
+
+import httpx
+
+from fundbot import util
+
+
+def daily_cache(func):
+    date = None
+    cached = None
+
+    @wraps(func)
+    def _wrapper(*args, **kwargs):
+        nonlocal date, cached
+        cur_date = datetime.date.today()
+        if date is None or cur_date > date:
+            date = cur_date
+            res = func(*args, **kwargs)
+            cached = res
+        return cached
+    return _wrapper
+
+
+# @daily_cache
+async def get_all_fund():
+    async with httpx.AsyncClient() as client:
+        rand_rt = util.get_random_dt()
+        url = f'https://fund.eastmoney.com/js/fundcode_search.js?dt={rand_rt}'
+        r = await client.get(url)
+        data = r.text
+        data = eval(data[9:-1]) if 'var r = ' in data else None
+        if data:
+            return data
+        else:
+            return "出问题了，兄弟"
+
 
 async def getFundData(fund_id):
     fund_id = str(fund_id)
-    recent_time = time.time()*1000 - random.randint(1,500)
+    recent_time = time.time()*1000 - random.randint(1, 500)
     recent_time = str(int(recent_time))
-    url = "https://fundgz.1234567.com.cn/js/%s.js?rt=%s" % (fund_id, recent_time)
+    url = f"https://fundgz.1234567.com.cn/js/{fund_id}.js?rt={recent_time}"
     async with httpx.AsyncClient() as client:
         r = await client.get(url)
         data = decodeFundData(r)
@@ -15,6 +52,7 @@ async def getFundData(fund_id):
         else:
             return "卧槽查不到啊"
 
+
 def decodeFundData(fund_data):
     data = fund_data.text
     if data[0:8] == 'jsonpgz(':
@@ -22,6 +60,7 @@ def decodeFundData(fund_data):
     else:
         print("[ERROR] Not jsonpgz type")
         return None
+
 
 def scanfFundJson(json_file):
     # format output
@@ -39,4 +78,3 @@ def scanfFundJson(json_file):
     # delete last '\n'
     result = result[:-1]
     return result
-    
