@@ -18,7 +18,7 @@ async def handle_fund(bot: Bot, event: Event, state: T_State):
         await fund.finish("用法: #fund <fundid>")
     elif len(args) >= 2:
         result += "超过的参数会被忽略\n"
-    result = result + (await data_source.getFundData(args[0]))
+    result = result + (await data_source.get_fund_data(args[0]))
     msg = Message(result)
     print(msg)
     await bot.send(event, msg, False)

@@ -40,19 +40,19 @@ async def get_all_fund() -> Union[List, str]:
             return "出问题了，兄弟"
 
 
-async def getFundData(fund_id: str) -> str:
+async def get_fund_data(fund_id: str) -> str:
     recent_time = util.get_random_dt()
     url = f"https://fundgz.1234567.com.cn/js/{fund_id}.js?rt={recent_time}"
     async with httpx.AsyncClient() as client:
         r = await client.get(url)
-        data = decodeFundData(r)
+        data = decode_fund_data(r)
         if data:
-            return scanfFundJson(data)
+            return format_fund_data(data)
         else:
             return "卧槽查不到啊"
 
 
-def decodeFundData(fund_data: str) -> Dict:
+def decode_fund_data(fund_data: str) -> Dict:
     data = fund_data.text
     if data[0:8] == 'jsonpgz(':
         return eval(data[8:-2])
@@ -61,18 +61,18 @@ def decodeFundData(fund_data: str) -> Dict:
         return None
 
 
-def scanfFundJson(json_file: Dict) -> str:
+def format_fund_data(fund_data: Dict) -> str:
     # format output
     result = ""
     format_pattern = "%s: %s\n"
-    result += format_pattern % ("基金代号", json_file["fundcode"])
-    result += format_pattern % ("基金名称", json_file["name"])
+    result += format_pattern % ("基金代号", fund_data["fundcode"])
+    result += format_pattern % ("基金名称", fund_data["name"])
     result += "\n"
-    result += format_pattern % ("单位净值", json_file["dwjz"])
-    result += format_pattern % ("日期", json_file["jzrq"])
-    result += format_pattern % ("估算净值", json_file["gsz"])
-    result += format_pattern % ("估算增值率", json_file["gszzl"])
-    result += format_pattern % ("估算时间", json_file["gztime"])
+    result += format_pattern % ("单位净值", fund_data["dwjz"])
+    result += format_pattern % ("日期", fund_data["jzrq"])
+    result += format_pattern % ("估算净值", fund_data["gsz"])
+    result += format_pattern % ("估算增值率", fund_data["gszzl"])
+    result += format_pattern % ("估算时间", fund_data["gztime"])
 
     # delete last '\n'
     result = result[:-1]

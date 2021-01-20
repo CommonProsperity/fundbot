@@ -18,7 +18,7 @@ async def handle_fund(bot: Bot, event: Event, state: T_State):
         fund_data = result
     else:
         fund_id, *_ = random.choice(result)
-        fund_data = await data_source.getFundData(fund_id)
+        fund_data = await data_source.get_fund_data(fund_id)
     msg = Message(fund_data)
     print(msg)
     await bot.send(event, msg, False)
