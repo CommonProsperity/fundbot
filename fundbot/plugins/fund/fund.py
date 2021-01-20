@@ -12,7 +12,6 @@ fund = on_command("fund", rule=None, priority=5)
 
 @fund.handle()
 async def handle_fund(bot: Bot, event: Event, state: T_State):
-    print('got')
     args = str(event.get_message()).split()
     result = ""
     if len(args) == 0:
