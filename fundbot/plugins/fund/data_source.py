@@ -73,7 +73,8 @@ def format_fund_data(fund_data: Dict) -> str:
     result += format_pattern % ("估算净值", fund_data["gsz"])
     result += format_pattern % ("估算增值率", fund_data["gszzl"])
     result += format_pattern % ("估算时间", fund_data["gztime"])
-
     # delete last '\n'
     result = result[:-1]
+    if float(fund_data['gszzl']) < 0:
+        result += '\n\n这谁的\U0001F414，太垃圾了吧？'
     return result
