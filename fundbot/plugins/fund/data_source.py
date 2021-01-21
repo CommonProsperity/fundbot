@@ -1,11 +1,10 @@
-import time
 import datetime
-import random
 from functools import wraps
-import copy
 from typing import Union, List, Dict
+import traceback
 
 import httpx
+from nonebot.log import logger, default_format
 
 from fundbot import util
 
@@ -54,11 +53,15 @@ async def get_fund_data(fund_id: str) -> str:
 
 def decode_fund_data(fund_data: str) -> Dict:
     data = fund_data.text
-    if data[0:8] == 'jsonpgz(':
-        return eval(data[8:-2])
-    else:
-        print("[ERROR] Not jsonpgz type")
-        return None
+    try:
+        if data[0:8] == 'jsonpgz(':
+            return eval(data[8:-2])
+        else:
+            logger.error("Not jsonpgz type")
+            return None
+    except:
+        traceback.print_exc()
+        logger.error(data)
 
 
 def format_fund_data(fund_data: Dict) -> str:
