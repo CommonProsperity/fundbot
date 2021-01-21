@@ -2,6 +2,16 @@
 
 ## How to start
 
-1. generate project using `nb create` .
-2. writing your plugins under `src/plugins` folder.
+1. install dependency .
+
+   `pip install -r requirements.txt`
+
+2. run your driver such as [go-cqhttp](https://github.com/Mrs4s/go-cqhttp).
+
 3. run your bot using `nb run` .
+
+## Reference
+
+[Nonebot2 Doc](https://v2.nonebot.dev/)
+
+[go-cqhttp Doc](https://docs.go-cqhttp.org/)
