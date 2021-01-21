@@ -9,7 +9,7 @@ global data_list
 data_list = None
 
 global search_cache
-search_cache = dict() # key: list, val: str
+search_cache = dict()  # key: list, val: str
 
 
 def cache_add(search_args: list, result: str) -> str:
@@ -19,7 +19,6 @@ def cache_add(search_args: list, result: str) -> str:
     if len(search_cache) > 100:
         search_cache.clear()
     search_cache[search_args] = result
-    
 
 
 async def search_impl(args: str) -> str:
