@@ -48,9 +48,9 @@ async def search_impl(args: str) -> str:
             result += f'{code}, {name}\n'
             n_results += 1
             if n_results >= 5:
-                result += '仅返回前五条结果'
+                result += '仅返回前五条结果\n'
                 break
     if result == "":
-        result = "你在找锤子呢"
-    cache_add(args, result)
-    return result
+        result = "你在找锤子呢\n"
+    cache_add(args, result[:-1])
+    return result[:-1]
