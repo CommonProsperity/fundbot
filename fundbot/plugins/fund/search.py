@@ -5,8 +5,6 @@ from nonebot.typing import T_State
 from nonebot.adapters import Bot, Event
 from nonebot.adapters.cqhttp import Message
 
-import time
-from . import data_source
 from . import search_impl
 
 # Usage: #search <arg1> ... <argn>

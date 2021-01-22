@@ -1,15 +1,16 @@
-import httpx
-import time
-import random
-import asyncio
 from . import data_source
+from datetime import date
+import math
 
 
-global data_list
 data_list = None
-
-global search_cache
 search_cache = dict()  # key: list, val: str
+cached_date = None
+
+ITEMS_PER_PAGE = 5
+_USAGE = f"""用法: /search <arg1> ... <argn> [page]
+show {ITEMS_PER_PAGE} per page, and page ∈ N+
+"""
 
 
 def cache_add(search_args: list, result: str) -> str:
@@ -22,8 +23,7 @@ def cache_add(search_args: list, result: str) -> str:
 
 
 async def search_impl(args: str) -> str:
-    global search_cache
-    global data_list
+    global search_cache, data_list, cached_date
 
     # search in the cache
     if args in search_cache.keys():
@@ -32,25 +32,23 @@ async def search_impl(args: str) -> str:
     # not in cache
     arg_list = args.split()
     if len(arg_list) == 0:
-        return "用法: /search <arg1> ... <argn>"
-    if not data_list:
+        return _USAGE
+    cur_date = date.today()
+    if not data_list or cached_date is None or cur_date != cached_date:
         data_list = await data_source.get_all_fund()
-    n_results = 0
-    result = ""
-    for item in data_list:
-        code, name = item[0], item[2]
-        valid = True
-        for arg in arg_list:
-            if name.find(arg) == -1:
-                valid = False
-                break
-        if valid:
-            result += f'{code}, {name}\n'
-            n_results += 1
-            if n_results >= 5:
-                result += '仅返回前五条结果'
-                break
-    if result == "":
-        result = "你在找锤子呢"
-    cache_add(args, result)
+        cached_date = cur_date
+    try:
+        page = int(arg_list[-1]) - 1
+        arg_list = arg_list[:-1]
+    except:
+        page = 0
+    if page < 0:
+        return _USAGE
+    search_result = [i for i in data_list if all(x in i[2] for x in arg_list)]
+    start = page * ITEMS_PER_PAGE
+    end = min(start + ITEMS_PER_PAGE, len(search_result))
+    if start >= end:
+        return "你在找锤子呢"
+    result = '\n'.join(f'{i[0]}, {i[2]}' for i in search_result[start:end])
+    result += f'\n{page + 1}/{math.ceil(len(search_result)/ITEMS_PER_PAGE)}'
     return result
