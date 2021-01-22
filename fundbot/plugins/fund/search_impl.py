@@ -25,7 +25,7 @@ def cache_add(search_args: list, result: str) -> str:
 
 def draw_page(arg_list):
     try:
-        return int(arg_list.pop(len(arg_list) - 1)) - 1
+        return int(arg_list.pop()) - 1
     except:
         return 0
 
