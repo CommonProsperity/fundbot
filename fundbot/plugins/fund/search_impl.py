@@ -25,10 +25,11 @@ def cache_add(search_args: list, result: str) -> str:
 
 def draw_page(arg_list):
     try:
-        arg_list.pop(len(arg_list) - 1)
-        return int(arg_list[-1]) - 1
+        page = int(arg_list[-1]) -1
+        arg_list.pop()
     except:
-        return 0
+        page = 0
+    return page
 
 
 async def search_impl(args: str) -> str:
