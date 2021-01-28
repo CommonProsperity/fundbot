@@ -1,8 +1,7 @@
 import time
-import random
 import traceback
-from typing import Union, List, Dict
-from nonebot.log import logger, default_format
+from typing import Dict
+from nonebot.log import logger
 from bs4 import BeautifulSoup
 
 

@@ -4,7 +4,6 @@ from nonebot.typing import T_State
 from nonebot.adapters import Bot, Event
 from nonebot.adapters.cqhttp import Message
 
-from . import data_source
 from .models import fund_impl
 
 # Usage: #fund <fundid> <compareddate(y-m-d)>

@@ -1,14 +1,12 @@
 import datetime
 from functools import wraps
 from typing import Union, List, Dict
-import traceback
-import asyncio
 
 import httpx
-from nonebot.log import logger, default_format
+from nonebot.log import logger
 
 from fundbot import util
-from .util import decode_fund_data, decode_fund_range_data, format_fund_data, get_timestamp_from_dt
+from .util import decode_fund_data, decode_fund_range_data, get_timestamp_from_dt
 
 
 def daily_cache(func):
