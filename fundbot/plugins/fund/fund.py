@@ -5,8 +5,9 @@ from nonebot.adapters import Bot, Event
 from nonebot.adapters.cqhttp import Message
 
 from . import data_source
+from .models import fund_impl
 
-# Usage: #fund <fundid>
+# Usage: #fund <fundid> <compareddate(y-m-d)>
 fund = on_command("fund", rule=None, priority=5)
 
 
@@ -15,15 +16,10 @@ async def handle_fund(bot: Bot, event: Event, state: T_State):
     args = str(event.get_message()).split()
     result = ""
     if len(args) == 0:
-        await fund.finish("用法1: #fund <fundid> \n用法2: #fund <fundid> <compareddate(y-m-d)> ")
+        await fund.finish("#fund <fundid> <compareddate(y-m-d)>")
     elif len(args) >= 3:
         result += "超过的参数会被忽略\n"
-    # fund <fundid>
-    if len(args) == 1:
-        result = result + (await data_source.get_fund_data(args[0]))
-    # fund <fundid> <compareddate(y-m-d)>
-    elif len(args) == 2:
-        result = result + (await data_source.get_fund_trend_data(args[0], args[1]))
+    result = result + await fund_impl.fund_impl(args)
     msg = Message(result)
     print(msg)
     await bot.send(event, msg, False)

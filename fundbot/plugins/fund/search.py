@@ -5,7 +5,7 @@ from nonebot.typing import T_State
 from nonebot.adapters import Bot, Event
 from nonebot.adapters.cqhttp import Message
 
-from . import search_impl
+from .models import search_impl
 
 # Usage: #search <arg1> ... <argn>
 search_cmd = on_command("search", rule=None, priority=5)
