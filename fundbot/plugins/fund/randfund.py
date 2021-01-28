@@ -6,6 +6,7 @@ from nonebot.adapters import Bot, Event
 from nonebot.adapters.cqhttp import Message
 
 from . import data_source
+from .util import format_fund_data
 
 # Usage: #fund <fundid>
 fund = on_command("randfund", rule=None, priority=5)
@@ -18,7 +19,11 @@ async def handle_fund(bot: Bot, event: Event, state: T_State):
         fund_data = result
     else:
         fund_id, *_ = random.choice(result)
-        fund_data = await data_source.get_fund_data(fund_id)
+        raw_data = await data_source.get_fund_data(fund_id)
+        if type(raw_data) is str:
+            fund_data = raw_data
+        else:
+            fund_data = format_fund_data(raw_data)
     msg = Message(fund_data)
     print(msg)
     await bot.send(event, msg, False)

@@ -1,12 +1,12 @@
 import datetime
 from functools import wraps
 from typing import Union, List, Dict
-import traceback
 
 import httpx
-from nonebot.log import logger, default_format
+from nonebot.log import logger
 
 from fundbot import util
+from .util import decode_fund_data, decode_fund_range_data, get_timestamp_from_dt
 
 
 def daily_cache(func):
@@ -39,45 +39,33 @@ async def get_all_fund() -> Union[List, str]:
             return "出问题了，兄弟"
 
 
-async def get_fund_data(fund_id: str) -> str:
+async def get_fund_data(fund_id: str) -> Union[Dict, str]:
     recent_time = util.get_random_dt()
     url = f"https://fundgz.1234567.com.cn/js/{fund_id}.js?rt={recent_time}"
     async with httpx.AsyncClient() as client:
         r = await client.get(url)
         data = decode_fund_data(r)
         if data:
-            return format_fund_data(data)
+            return data
         else:
             return "卧槽查不到啊"
 
 
-def decode_fund_data(fund_data: str) -> Dict:
-    data = fund_data.text
+async def get_fund_data_hist(fund_id: str, start_date: str, end_date: str) -> Union[Dict, str]:
+    recent_time = util.get_random_dt()
     try:
-        if data[0:8] == 'jsonpgz(':
-            return eval(data[8:-2])
-        else:
-            logger.error("Not jsonpgz type")
-            return None
+        start_time = get_timestamp_from_dt(start_date)
+        end_time = get_timestamp_from_dt(end_date)
     except:
-        traceback.print_exc()
-        logger.error(data)
-
-
-def format_fund_data(fund_data: Dict) -> str:
-    # format output
-    result = ""
-    format_pattern = "%s: %s\n"
-    result += format_pattern % ("基金代号", fund_data["fundcode"])
-    result += format_pattern % ("基金名称", fund_data["name"])
-    result += "\n"
-    result += format_pattern % ("单位净值", fund_data["dwjz"])
-    result += format_pattern % ("日期", fund_data["jzrq"])
-    result += format_pattern % ("估算净值", fund_data["gsz"])
-    result += format_pattern % ("估算增值率", fund_data["gszzl"])
-    result += format_pattern % ("估算时间", fund_data["gztime"])
-    # delete last '\n'
-    result = result[:-1]
-    if float(fund_data['gszzl']) < 0:
-        result += '\n\n这谁的\U0001F414，太垃圾了吧？'
-    return result
+        logger.error(f"Error date format: start_date<{start_date}> end_date<{end_date}>")
+        return "时间格式不对啊"
+    if start_time > end_time or recent_time < end_time:
+        return "你穿越回来得吗？"
+    url = f"https://fundf10.eastmoney.com/F10DataApi.aspx?type=lsjz&code={fund_id}&page=1&per=1&sdate={start_date}&edate={end_date}"
+    async with httpx.AsyncClient() as client:
+        r = await client.get(url)
+        data = decode_fund_range_data(r)
+        if data:
+            return data
+        else:
+            return "卧槽查不到啊"
