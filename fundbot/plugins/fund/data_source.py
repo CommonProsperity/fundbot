@@ -51,7 +51,7 @@ async def get_fund_data(fund_id: str) -> Union[Dict, str]:
             return "卧槽查不到啊"
 
 
-async def get_fund_data_hist(fund_id: str, start_date: str, end_date: str) -> Union[Dict, str]:
+async def get_fund_data_hist(fund_id: str, start_date: str, end_date: str, page: int = 1, per_page: int = 5) -> Union[Dict, str]:
     recent_time = util.get_random_dt()
     try:
         start_time = get_timestamp_from_dt(start_date)
@@ -61,11 +61,11 @@ async def get_fund_data_hist(fund_id: str, start_date: str, end_date: str) -> Un
         return "时间格式不对啊"
     if start_time > end_time or recent_time < end_time:
         return "你穿越回来得吗？"
-    url = f"https://fundf10.eastmoney.com/F10DataApi.aspx?type=lsjz&code={fund_id}&page=1&per=1&sdate={start_date}&edate={end_date}"
+    url = f"https://fundf10.eastmoney.com/F10DataApi.aspx?type=lsjz&code={fund_id}&page={page}&per={per_page}&sdate={start_date}&edate={end_date}"
     async with httpx.AsyncClient() as client:
         r = await client.get(url)
         data = decode_fund_range_data(r)
-        if data:
+        if len(data.get("fund_data", [])) > 0:
             return data
         else:
             return "卧槽查不到啊"
