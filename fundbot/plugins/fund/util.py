@@ -30,18 +30,23 @@ def decode_fund_data(fund_data: str) -> Dict:
 def decode_fund_range_data(fund_range_data: str) -> Dict:
     raw_data = fund_range_data.text
     try:
-        if raw_data[0:22] == 'var apidata={ content:':
-            raw_data = raw_data[23:raw_data.find("records:")-2]
+        if raw_data[0:22] == 'var apidata={ content:' and raw_data.find("records:") != -1:
+            fund_info = raw_data[23:raw_data.find("records:")-2]
+            page_info = raw_data[raw_data.find("records:"):-2]
         else:
             logger.error("Not jsonpgz type")
             return None
-        fund_data = {}
-        soup = BeautifulSoup(raw_data, 'html')
-        if len(soup.table.tbody.tr.select('td')) < 7:
-            return {"jzrq":"", "gsz":""}
-        fund_data["jzrq"] = soup.table.tbody.tr.select('td')[0].text
-        fund_data["gsz"] = soup.table.tbody.tr.select('td')[1].text
-        return fund_data
+        fund_data = []
+        soup = BeautifulSoup(fund_info, 'html')
+        entries_len = len(soup.table.tbody.select('tr'))
+        for i in range(entries_len):
+            entry_html = soup.table.tbody.select('tr')[i]
+            if len(entry_html.select('td')) == 7:
+                entry_data = {}
+                entry_data["jzrq"] = entry_html.select('td')[0].text
+                entry_data["gsz"] = entry_html.select('td')[1].text
+                fund_data.append(entry_data)
+        return {"fund_data": fund_data, "page_info": page_info}
     except:
         traceback.print_exc()
         logger.error(raw_data)
@@ -69,4 +74,15 @@ def format_fund_data(fund_data: Dict, compared_data: Dict = None) -> str:
     result = result[:-1]
     if float(fund_data['gszzl']) < 0:
         result += '\n\n这谁的\U0001F414，太垃圾了吧？'
+    return result
+
+def format_fund_hist_data(fund_hist_data: Dict, fund_id: str = "") -> str:
+    # format output
+    result = ""
+    if fund_id:
+        result += f"基金代号: {fund_id}\n"
+    format_pattern = "%s: %s; %s: %s\n"
+    for fund_data in fund_hist_data["fund_data"]:
+        result += format_pattern % ("日期", fund_data["jzrq"], "单位净值", fund_data["gsz"])
+    result += f"<{fund_hist_data['page_info']}>"
     return result
