@@ -1,9 +1,9 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
+FROM python:3.9.6-alpine
 
 RUN python3 -m pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 
-RUN python3 -m pip install poetry && poetry config virtualenvs.create false
+RUN python3 -m pip install pipenv
 
-COPY ./pyproject.toml ./poetry.lock* /app/
+RUN pipenv sync
 
-RUN poetry install --no-root --no-dev
+RUN pipenv run python bot.py
