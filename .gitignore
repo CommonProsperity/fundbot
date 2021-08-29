@@ -2,6 +2,12 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
+
+### Conifg ###
+config.json
+config.yml
+
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
