@@ -4,11 +4,12 @@
 
 1. install dependency .
 
-   `pip install -r requirements.txt`
+   `pipenv install`
 
 2. run your driver such as [go-cqhttp](https://github.com/Mrs4s/go-cqhttp).
 
-3. run your bot using `nb run` .
+3. run your bot using `pipenv run python bot.py` .
+
 
 ## Reference
 

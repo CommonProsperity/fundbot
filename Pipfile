@@ -1,0 +1,17 @@
+[[source]]
+url = "https://mirrors.aliyun.com/pypi/simple/"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+nonebot2 = "2.0.0a15"
+nonebot-adapter-cqhttp = "2.0.0a15"
+beautifulsoup4="4.9.3"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true

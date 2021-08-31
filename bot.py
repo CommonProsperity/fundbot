@@ -18,7 +18,7 @@ from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 nonebot.init(_env_file=".env")
 driver = nonebot.get_driver()
 config = driver.config
-config.command_start = set("#!！/")
+config.command_start = set("!！/#")
 
 nonebot.load_builtin_plugins()
 app = nonebot.get_asgi()
